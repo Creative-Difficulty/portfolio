@@ -1,0 +1,276 @@
+<canvas aria-hidden="true" data-canvas-bg></canvas>
+<style>
+    canvas {
+        position: fixed;
+        inset: 0;
+        display: block;
+        width: 100%;
+        height: 100%;
+        height: 100svh;
+        height: 100dvh;
+        z-index: 0;
+    }
+</style>
+<script type="module" is:inline>
+    const canvas = document.querySelector("[data-canvas-bg]");
+    if (!canvas) {
+        throw new Error("Canvas element not found");
+    }
+
+    const ctx = canvas.getContext("2d");
+    if (!ctx) {
+        throw new Error("2D context not available");
+    }
+    ctx.imageSmoothingEnabled = false;
+
+    const backgroundColor = "#000";
+    const aliveColor = "rgb(210, 220, 212)";
+    const baseAlpha = 0.55;
+    const minCellSize = 5;
+    const maxCellSize = 12;
+    const targetCellsOnMinAxis = 120;
+    const seedDensity = 0.4;
+    const seedEdgeDensity = 0;
+    const seedFalloffPower = 2;
+    const seedRadius = 0.9;
+    const fadeSpeed = 0.12;
+
+    let cols = 0;
+    let rows = 0;
+    let cellPx = 0;
+    let grid = new Uint8Array(0);
+    let next = new Uint8Array(0);
+    let intensity = new Float32Array(0);
+
+    const clamp = (value, min, max) => Math.min(max, Math.max(min, value));
+
+    const seedAtCell = (cellX, cellY) => {
+        if (!cols || !rows) return;
+
+        const size = 5;
+        const half = Math.floor(size / 2);
+        for (let dy = -half; dy <= half; dy += 1) {
+            const y = cellY + dy;
+            if (y < 0 || y >= rows) continue;
+            for (let dx = -half; dx <= half; dx += 1) {
+                const x = cellX + dx;
+                if (x < 0 || x >= cols) continue;
+                const idx = y * cols + x;
+                const nextValue = Math.random() < 0.6 ? 1 : 0;
+                grid[idx] = nextValue;
+                intensity[idx] = Math.max(intensity[idx] ?? 0, nextValue);
+            }
+        }
+    };
+
+    const reseed = (newCols, newRows, newCellPx) => {
+        cols = newCols;
+        rows = newRows;
+        cellPx = newCellPx;
+        grid = new Uint8Array(cols * rows);
+        next = new Uint8Array(cols * rows);
+        intensity = new Float32Array(cols * rows);
+        const centerX = (cols - 1) / 2;
+        const centerY = (rows - 1) / 2;
+        const halfCols = Math.max(1, cols / 2);
+        const halfRows = Math.max(1, rows / 2);
+        const densitySpan = seedDensity - seedEdgeDensity;
+
+        for (let y = 0; y < rows; y += 1) {
+            const dy = (y - centerY) / halfRows;
+            for (let x = 0; x < cols; x += 1) {
+                const dx = (x - centerX) / halfCols;
+                const distance = Math.min(1, Math.hypot(dx, dy));
+                const withinRadius = distance <= seedRadius;
+                const normalized = withinRadius ? distance / seedRadius : 1;
+                const falloff = Math.pow(Math.max(0, 1 - normalized), seedFalloffPower);
+                const density = seedEdgeDensity + densitySpan * falloff;
+                const idx = y * cols + x;
+                grid[idx] = Math.random() < density ? 1 : 0;
+                intensity[idx] = grid[idx] ?? 0;
+            }
+        }
+    };
+
+    const resizeGridPreserve = (newCols, newRows, newCellPx) => {
+        const prevCols = cols;
+        const prevRows = rows;
+        const prevGrid = grid;
+        const prevIntensity = intensity;
+
+        cols = newCols;
+        rows = newRows;
+        cellPx = newCellPx;
+        grid = new Uint8Array(cols * rows);
+        next = new Uint8Array(cols * rows);
+        intensity = new Float32Array(cols * rows);
+
+        if (!prevCols || !prevRows) return;
+
+        const prevCenterX = Math.floor(prevCols / 2);
+        const prevCenterY = Math.floor(prevRows / 2);
+        const nextCenterX = Math.floor(cols / 2);
+        const nextCenterY = Math.floor(rows / 2);
+        const colOffset = nextCenterX - prevCenterX;
+        const rowOffset = nextCenterY - prevCenterY;
+
+        for (let y = 0; y < prevRows; y += 1) {
+            const newY = y + rowOffset;
+            if (newY < 0 || newY >= rows) continue;
+            for (let x = 0; x < prevCols; x += 1) {
+                const newX = x + colOffset;
+                if (newX < 0 || newX >= cols) continue;
+                const oldIdx = y * prevCols + x;
+                const newIdx = newY * cols + newX;
+                const value = prevGrid[oldIdx] ?? 0;
+                grid[newIdx] = value;
+                intensity[newIdx] = prevIntensity[oldIdx] ?? value;
+            }
+        }
+    };
+
+    const step = () => {
+        if (!cols || !rows) return;
+
+        const read = (index) => grid[index] ?? 0;
+
+        for (let y = 0; y < rows; y += 1) {
+            const yPrev = (y + rows - 1) % rows;
+            const yNext = (y + 1) % rows;
+            for (let x = 0; x < cols; x += 1) {
+                const xPrev = (x + cols - 1) % cols;
+                const xNext = (x + 1) % cols;
+
+                const idx = y * cols + x;
+                const neighbors = read(yPrev * cols + xPrev) + read(yPrev * cols + x) + read(yPrev * cols + xNext) + read(y * cols + xPrev) + read(y * cols + xNext) + read(yNext * cols + xPrev) + read(yNext * cols + x) + read(yNext * cols + xNext);
+
+                const alive = read(idx) === 1;
+                const nextValue = neighbors === 3 || (alive && neighbors === 2) ? 1 : 0;
+                next[idx] = nextValue;
+            }
+        }
+
+        const tmp = grid;
+        grid = next;
+        next = tmp;
+    };
+
+    const render = (deltaMs) => {
+        if (!cols || !rows) return;
+
+        ctx.globalAlpha = 1;
+        ctx.fillStyle = backgroundColor;
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        const fade = Math.min(1, 1 - Math.pow(1 - fadeSpeed, deltaMs / 16.67));
+        ctx.fillStyle = aliveColor;
+        for (let y = 0; y < rows; y += 1) {
+            const yOffset = y * cellPx;
+            for (let x = 0; x < cols; x += 1) {
+                const idx = y * cols + x;
+                const target = grid[idx] ?? 0;
+                const current = intensity[idx] ?? 0;
+                const value = current + (target - current) * fade;
+                intensity[idx] = value;
+
+                const alpha = value * baseAlpha;
+                if (alpha > 0.01) {
+                    ctx.globalAlpha = alpha;
+                    ctx.fillRect(x * cellPx, yOffset, cellPx, cellPx);
+                }
+            }
+        }
+        ctx.globalAlpha = 1;
+    };
+
+    const resizeCanvas = () => {
+        const dPR = Math.max(1, window.devicePixelRatio || 1);
+        const viewport = window.visualViewport;
+        const cssWidth = viewport?.width ?? window.innerWidth;
+        const cssHeight = viewport?.height ?? window.innerHeight;
+
+        const pixelWidth = Math.max(1, Math.floor(cssWidth * dPR));
+        const pixelHeight = Math.max(1, Math.floor(cssHeight * dPR));
+
+        if (canvas.width !== pixelWidth) {
+            canvas.width = pixelWidth;
+        }
+        if (canvas.height !== pixelHeight) {
+            canvas.height = pixelHeight;
+        }
+
+        canvas.style.width = `${cssWidth}px`;
+        canvas.style.height = `${cssHeight}px`;
+
+        const minAxis = Math.min(cssWidth, cssHeight);
+        const desiredCellCss = clamp(Math.round(minAxis / targetCellsOnMinAxis), minCellSize, maxCellSize);
+        const nextCellPx = Math.max(1, Math.round(desiredCellCss * dPR));
+        const nextCols = Math.max(1, Math.floor(pixelWidth / nextCellPx));
+        const nextRows = Math.max(1, Math.floor(pixelHeight / nextCellPx));
+
+        if (nextCols !== cols || nextRows !== rows || nextCellPx !== cellPx) {
+            if (!cols || !rows) {
+                reseed(nextCols, nextRows, nextCellPx);
+            } else {
+                resizeGridPreserve(nextCols, nextRows, nextCellPx);
+            }
+        }
+    };
+
+    resizeCanvas();
+    window.addEventListener("resize", resizeCanvas, { passive: true });
+    window.visualViewport?.addEventListener("resize", resizeCanvas, { passive: true });
+    window.visualViewport?.addEventListener("scroll", resizeCanvas, { passive: true });
+
+    let isPointerDown = false;
+
+    const seedFromPointer = (event) => {
+        const rect = canvas.getBoundingClientRect();
+        const cssX = event.clientX - rect.left;
+        const cssY = event.clientY - rect.top;
+        const cellX = Math.floor(cssX / (cellPx / Math.max(1, window.devicePixelRatio || 1)));
+        const cellY = Math.floor(cssY / (cellPx / Math.max(1, window.devicePixelRatio || 1)));
+        seedAtCell(cellX, cellY);
+    };
+
+    canvas.addEventListener("pointerdown", (event) => {
+        isPointerDown = true;
+        canvas.setPointerCapture(event.pointerId);
+        seedFromPointer(event);
+    });
+
+    canvas.addEventListener("pointermove", (event) => {
+        if (!isPointerDown) return;
+        seedFromPointer(event);
+    });
+
+    const endPointer = (event) => {
+        if (!isPointerDown) return;
+        isPointerDown = false;
+        canvas.releasePointerCapture(event.pointerId);
+    };
+
+    canvas.addEventListener("pointerup", endPointer);
+    canvas.addEventListener("pointercancel", endPointer);
+    canvas.addEventListener("pointerleave", endPointer);
+
+    let lastTime = performance.now();
+    let accumulator = 0;
+    const stepMs = 2000;
+
+    const tick = (time) => {
+        const delta = time - lastTime;
+        lastTime = time;
+        accumulator += delta;
+
+        while (accumulator >= stepMs) {
+            step();
+            accumulator -= stepMs;
+        }
+
+        render(delta);
+        requestAnimationFrame(tick);
+    };
+
+    requestAnimationFrame(tick);
+</script>

@@ -1,0 +1,46 @@
+---
+import GithubIcon from "./GithubIcon.astro";
+
+type Props = {
+    url?: string | null;
+    label: string;
+};
+
+const { url, label } = Astro.props as Props;
+const isDisabled = !url;
+---
+
+{
+    isDisabled ? (
+        <span class="github-link is-disabled" aria-hidden="true">
+            <GithubIcon />
+        </span>
+    ) : (
+        <a class="github-link" href={url} aria-label={`${label} on GitHub`}>
+            <GithubIcon />
+        </a>
+    )
+}
+<style>
+    .github-link {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 2rem;
+        height: 2rem;
+        border-radius: 999px;
+        border: 1px solid var(--border);
+        color: #fff;
+        text-decoration: none;
+    }
+    .github-link.is-disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+        pointer-events: none;
+    }
+    .github-link:hover,
+    .github-link:focus {
+        border-color: rgba(139, 210, 255, 0.65);
+        color: rgba(139, 210, 255, 0.9);
+    }
+</style>

@@ -1,0 +1,101 @@
+---
+import { Image } from "astro:assets";
+import geschTulln from "../assets/dunkles_gesch.jpg";
+import pritschLong from "../assets/pritsch_long_exp.jpg";
+
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout>
+    <main class="intro">
+        <div class="panel">
+            <h1 class="page-title">Photography</h1>
+            <p class="page-subtitle">Very few uploaded at the moment, but I'll add more.</p>
+        </div>
+    </main>
+
+    <section>
+        <div class="photo-grid">
+            <figure class="photo-card">
+                <Image src={pritschLong} alt="lake with a large hill and lights reflecting off of the calm water" loading="lazy" />
+                <figcaption>long exposure of lake Wörthersee in Austria</figcaption>
+            </figure>
+        </div>
+        <div class="photo-grid">
+            <figure class="photo-card">
+                <Image src={geschTulln} alt="a store with a glowing red sign above it, photographed at nighttime" loading="lazy" />
+                <figcaption>A store at nighttime</figcaption>
+            </figure>
+        </div>
+    </section>
+
+    <dialog class="photo-dialog" data-photo-dialog aria-label="Expanded photo view">
+        <button class="photo-dialog-close" type="button" data-photo-close aria-label="Close image">×</button>
+        <img class="photo-dialog-image" data-photo-dialog-image alt="" />
+        <p class="photo-dialog-caption" data-photo-dialog-caption></p>
+    </dialog>
+</BaseLayout>
+
+<style>
+    .panel {
+        background: var(--panel);
+        padding: clamp(1.6rem, 4vw, 3rem);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+    .page-title {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+    }
+    .page-subtitle {
+        margin: 0.4rem 0 0;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+
+    .section-title {
+        letter-spacing: 0.12em;
+        font-size: 0.75rem;
+        color: var(--accent);
+        text-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+    }
+    .photo-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 1rem;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .photo-card {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: flex-start;
+        width: fit-content;
+        max-width: 100%;
+        border: 1px dashed var(--border);
+        border-radius: 16px;
+        background: rgba(3, 4, 5, 0.7);
+        padding: 1rem;
+        box-shadow: 0 16px 34px rgba(0, 0, 0, 0.45);
+    }
+
+    .photo-card img {
+        width: auto;
+        max-width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 0;
+    }
+    @media (min-width: 900px) {
+        .photo-card img {
+            max-height: 520px;
+            object-fit: contain;
+        }
+    }
+    .photo-card figcaption {
+        margin-top: 0.6rem;
+        color: var(--faint);
+        font-size: 0.7rem;
+        letter-spacing: 0.08em;
+    }
+</style>

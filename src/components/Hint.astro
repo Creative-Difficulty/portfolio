@@ -1,0 +1,60 @@
+---
+const { showArrow = false } = Astro.props as { showArrow?: boolean };
+---
+
+<div class="hint" aria-live="polite">
+    <span>
+        Click or drag anywhere to add particles to
+        <a class="hint-link" href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">conway's game of life</a>.
+    </span>
+
+    <svg class="bg-arrow" viewBox="0 0 120 60" aria-hidden="true">
+        <path d="M5 10 C45 10, 70 35, 95 50"></path>
+        <path d="M95 50 L82 46 M95 50 L88 38"></path>
+    </svg>
+</div>
+<style>
+    .hint {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        padding: 0.55rem 0.85rem;
+        border: 1px dashed var(--border);
+        background: rgba(3, 4, 5, 0.65);
+        color: var(--muted);
+        font-size: 0.72rem;
+        letter-spacing: 0.02em;
+        width: fit-content;
+    }
+    .overlay > .hint {
+        width: fit-content;
+    }
+    .hint-link {
+        color: var(--ink);
+        text-decoration: underline;
+        text-decoration-thickness: 1px;
+        text-underline-offset: 2px;
+    }
+    .bg-arrow {
+        position: absolute;
+        right: -1.6rem;
+        top: 100%;
+        margin-top: 0.2rem;
+        width: 110px;
+        height: 60px;
+        stroke: var(--faint);
+        stroke-width: 1.5;
+        fill: none;
+        pointer-events: none;
+    }
+    .bg-arrow path {
+        stroke-linecap: round;
+        stroke-linejoin: round;
+    }
+    @media (max-width: 700px) {
+        .bg-arrow {
+            display: none;
+        }
+    }
+</style>

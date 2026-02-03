@@ -1,0 +1,46 @@
+---
+import ProjectCard from "../components/ProjectCard.astro";
+import { projects } from "../data/projects";
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout>
+    <main class="intro">
+        <div class="panel">
+            <h1 class="page-title">All Projects</h1>
+            <p class="page-subtitle">Most are finished, some are under development.</p>
+        </div>
+    </main>
+
+    <section class="work">
+        <div class="project-grid">
+            {projects.map((project) => <ProjectCard project={project} />)}
+        </div>
+    </section>
+</BaseLayout>
+<style>
+    .panel {
+        background: var(--panel);
+        padding: clamp(1.6rem, 4vw, 3rem);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+    .page-title {
+        margin: 0;
+        font-size: clamp(2rem, 5vw, 3.2rem);
+    }
+    .page-subtitle {
+        margin: 0.4rem 0 0;
+        color: var(--muted);
+        font-size: 1rem;
+        line-height: 1.5;
+    }
+    .work {
+        display: grid;
+        gap: 1rem;
+    }
+    .project-grid {
+        display: grid;
+        gap: 1.2rem;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+</style>

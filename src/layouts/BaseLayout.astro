@@ -1,0 +1,49 @@
+---
+import "../global.css";
+import CanvasBackground from "../components/CanvasBackground.astro";
+import Footer from "../components/Footer.astro";
+import TopBar from "../components/TopBar.astro";
+---
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+        <title>Alexander Leschanz</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+        <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+        <style is:global>
+            .overlay {
+                position: relative;
+                z-index: 1;
+                min-height: 100vh;
+                min-height: 100svh;
+                min-height: 100dvh;
+                display: flex;
+                flex-direction: column;
+                gap: clamp(2rem, 6vw, 4rem);
+                padding: clamp(1.5rem, 5vw, 3.5rem);
+                pointer-events: none;
+            }
+            .overlay > * {
+                width: min(100%, var(--max-width));
+                margin: 0 auto;
+                pointer-events: none;
+            }
+            .overlay a,
+            .overlay .button {
+                pointer-events: auto;
+            }
+        </style>
+    </head>
+    <body>
+        <CanvasBackground />
+        <div class="overlay">
+            <TopBar />
+            <slot />
+            <Footer links={[{ label: "Back to home", href: "/" }]} />
+        </div>
+    </body>
+</html>

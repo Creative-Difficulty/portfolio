@@ -1,0 +1,31 @@
+:root {
+    color-scheme: dark;
+    --bg: #050505;
+    --ink: #e6eee6;
+    --muted: rgba(230, 238, 230, 0.7);
+    --faint: rgba(230, 238, 230, 0.45);
+    --accent: rgba(139, 210, 255, 1);
+    --border: rgba(230, 238, 230, 0.18);
+    --panel: rgba(3, 4, 5, 0.76);
+    --max-width: 980px;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    width: 100%;
+    min-height: 100%;
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Space Mono", monospace;
+    letter-spacing: 0;
+    overflow-x: hidden;
+}
+
+.example::-webkit-scrollbar {
+    display: none;
+}

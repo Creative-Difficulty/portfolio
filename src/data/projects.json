@@ -1,0 +1,85 @@
+{
+    "projects": [
+        {
+            "name": "Euconet Inventory App",
+            "slug": "inventory-app",
+            "description": "Crossplatform inventory app for a consulting firm with remote database sync, offline support and auth.",
+            "tags": ["Flutter", "iOS & Android"],
+            "githubUrl": null,
+            "private": true
+        },
+        {
+            "name": "Oxygen",
+            "slug": "oxygen",
+            "description": "Server monitoring utility reporting CPU, GPU, RAM and other system parameters live over websockets and HTTP.",
+            "tags": ["Rust", "Backend", "Monitoring & diagnostic"],
+            "githubUrl": null,
+            "private": true
+        },
+        {
+            "name": "mSCKee",
+            "slug": "msckee",
+            "description": "Split Keyboard with per-key backlighting for Hackclub Blueprint, all designed from scratch.",
+            "tags": ["Circuit design"],
+            "githubUrl": "https://github.com/Creative-Difficulty/mSCKee",
+            "private": false
+        },
+        {
+            "name": "Trading-Bot",
+            "slug": "trading-bot",
+            "description": "Simple automated trading bot for the capital.com broker using data from LuxAlgo signal alerts.",
+            "tags": ["TypeScript"],
+            "githubUrl": "https://github.com/Creative-Difficulty/Trading-Bot",
+            "private": false
+        },
+        {
+            "name": "LiveChart",
+            "slug": "livechart",
+            "description": "Interactive aviation chart viewer supported by data from the flight simulator.",
+            "tags": ["Rust", "In development"],
+            "githubUrl": "https://github.com/Creative-Difficulty/LiveChart",
+            "private": false
+        },
+        {
+            "name": "nixos-config",
+            "slug": "nixos-config",
+            "description": "Personal declarative computer configuration, learn more about NixOS at <a href=\"https://nixos.org/\">nixos.org</a>.",
+            "tags": ["Nix"],
+            "githubUrl": "https://github.com/Creative-Difficulty/nixos-config",
+            "private": false
+        },
+        {
+            "name": "AtcSim",
+            "slug": "atcsim",
+            "description": "Pre-alpha air traffic control simulator.",
+            "tags": ["Rust"],
+            "githubUrl": "https://github.com/Creative-Difficulty/AtcSim",
+            "private": false
+        },
+        {
+            "name": "capitalcomclient-shadcn",
+            "slug": "capitalcomclient-shadcn",
+            "description": "Accessing financial data from the capital.com broker API and displaying it on a concise dashboard.",
+            "tags": ["Svelte"],
+            "githubUrl": "https://github.com/Creative-Difficulty/capitalcomclient-shadcn",
+            "private": false
+        },
+        {
+            "name": "Euco-API-Client-IOS",
+            "slug": "euco-api-client-ios",
+            "description": "Client iOS App for early versions of server monitoring tool Oxygen.",
+            "tags": ["Swift"],
+            "githubUrl": "https://github.com/Creative-Difficulty/Euco-API-Client-IOS",
+            "private": false
+        },
+        {
+            "name": "AddonMover",
+            "slug": "addonmover-python",
+            "description": "Lets you backup and enable or disable all your flight simulator addons with the click of a button.",
+            "tags": ["Python"],
+            "githubUrl": "https://github.com/Creative-Difficulty/AddonMover-Python",
+            "private": false
+        }
+    ],
+    "homeLimit": 6
+}

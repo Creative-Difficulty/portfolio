@@ -1,0 +1,62 @@
+<header class="topbar">
+    <a class="top-link path-label" href="/" data-path-label>~/</a>
+    <div class="top-links">
+        <a class="top-link" href="/photos">my photos</a>
+        <a class="top-link" href="/projects">all projects</a>
+    </div>
+</header>
+
+<script>
+    function updatePathLabel() {
+        const label = document.querySelector<HTMLElement>("[data-path-label]");
+        if (!label) return;
+        let path = window.location.pathname || "/";
+        if (path.endsWith(".html")) {
+            path = path.slice(0, -5);
+        }
+        path = path.replace(/\/+$/, "");
+        if (path === "") path = "/";
+        const normalized = path === "/" ? "" : path.replace(/^\/+/, "");
+        const hash = window.location.hash || "";
+        label.textContent = `~/${normalized}${hash}`;
+    }
+    updatePathLabel();
+    window.addEventListener("hashchange", updatePathLabel);
+    window.addEventListener("popstate", updatePathLabel);
+</script>
+
+<style>
+    .topbar {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 1px solid var(--border);
+        font-size: 0.75rem;
+    }
+    .top-links {
+        display: flex;
+        gap: 1rem;
+        align-items: center;
+    }
+    .top-link {
+        color: var(--ink);
+        text-decoration: none;
+        letter-spacing: 0.02em;
+    }
+    .top-link:hover,
+    .top-link:focus {
+        color: var(--accent);
+    }
+    @media (max-width: 800px) {
+        .topbar {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 0.4rem;
+        }
+        .top-links {
+            flex-wrap: wrap;
+        }
+    }
+</style>

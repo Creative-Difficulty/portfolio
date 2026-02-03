@@ -1,0 +1,97 @@
+---
+import Hint from "../components/Hint.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { homeLimit, projects } from "../data/projects";
+import BaseLayout from "../layouts/BaseLayout.astro";
+
+const visibleProjects = projects.slice(0, homeLimit);
+---
+
+<BaseLayout>
+    <Hint showArrow={true} />
+
+    <main class="intro">
+        <div class="panel">
+            <h2>Hi, I'm Alex</h2>
+            <p class="lede">
+                I'm a 17 year-old student living near Vienna, Austria. I mainly do web design and web development. I'm fascinated by big complex (declarative) systems, and the technologies used to create them, like nix and rust. Since 2025 I've been learning about circuit design and electronics as part of
+                <a class="hint-link" href="https://blueprint.hackclub.com">Hack Club's Blueprint program</a>.
+            </p>
+            <div class="contact-cta">
+                <span class="contact-row">
+                    <a class="contact-link" href="https://github.com/Creative-Difficulty">GitHub</a>
+                    <span class="contact-separator">·</span>
+                    <a class="contact-link" href="https://www.linkedin.com/in/alexander-leschanz-ba4370399">LinkedIn</a>
+                </span>
+                <a>E-Mail: alexleschanz [at] icloud (dot) com</a>
+            </div>
+        </div>
+    </main>
+
+    <section class="work" id="work">
+        <div class="section-title">Projects</div>
+        <div class="project-grid">
+            {visibleProjects.map((project) => <ProjectCard project={project} />)}
+        </div>
+    </section>
+</BaseLayout>
+<style>
+    .panel {
+        background: var(--panel);
+        padding: clamp(1.6rem, 4vw, 3rem);
+        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+    }
+    .lede {
+        margin: 0 0 1.5rem;
+        color: var(--muted);
+        line-height: 1.6;
+        font-size: clamp(0.95rem, 2vw, 1.1rem);
+    }
+    .contact-cta {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 0.6rem;
+        text-align: center;
+        font-size: clamp(1.1rem, 2.8vw, 1.2rem);
+        font-weight: 600;
+        letter-spacing: 0.02em;
+    }
+    .contact-row {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    .contact-link {
+        color: var(--ink);
+        text-decoration: solid white underline;
+    }
+
+    .contact-link:hover,
+    .contact-link:focus {
+        color: var(--accent);
+        text-decoration: solid var(--accent) underline;
+    }
+    .contact-separator {
+        color: var(--muted);
+    }
+    .work {
+        display: grid;
+        gap: 1rem;
+    }
+    .section-title {
+        letter-spacing: 0.12em;
+        font-size: 0.75rem;
+        color: var(--accent);
+        text-shadow: 0 8px 18px rgba(0, 0, 0, 0.6);
+    }
+    .project-grid {
+        display: grid;
+        gap: 1.2rem;
+        grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    }
+</style>
