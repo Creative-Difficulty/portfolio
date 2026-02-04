@@ -32,17 +32,12 @@ const { links } = Astro.props as {
         gap: 0.4rem;
         color: var(--muted);
     }
-    .copyright-symbol {
-        display: inline-flex;
-        align-items: center;
-        line-height: 1;
-        font-size: 0.95em;
-        transform: translateY(1px);
-    }
+
     .footer-links {
         display: flex;
         gap: 0;
         flex-wrap: wrap;
+        text-decoration: underline var(--muted) solid;
     }
     .footer-links a + a {
         margin-left: 1rem;

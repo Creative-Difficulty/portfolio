@@ -8,7 +8,9 @@ const visibleProjects = projects.slice(0, homeLimit);
 ---
 
 <BaseLayout>
-    <Hint showArrow={true} />
+    <div class="hint-shell">
+        <Hint showArrow={true} />
+    </div>
 
     <main class="intro">
         <div class="panel">
@@ -37,9 +39,15 @@ const visibleProjects = projects.slice(0, homeLimit);
 </BaseLayout>
 <style>
     .panel {
-        background: var(--panel);
-        padding: clamp(1.6rem, 4vw, 3rem);
-        box-shadow: 0 24px 60px rgba(0, 0, 0, 0.55);
+        font-size: larger;
+    }
+    .hint-shell {
+        width: fit-content;
+    }
+    @media (max-width: 800px) {
+        .hint-shell {
+            display: none;
+        }
     }
     .lede {
         margin: 0 0 1.5rem;
@@ -55,7 +63,7 @@ const visibleProjects = projects.slice(0, homeLimit);
         align-items: center;
         gap: 0.6rem;
         text-align: center;
-        font-size: clamp(1.1rem, 2.8vw, 1.2rem);
+        font-size: clamp(1rem, 2.8vw, 1.2rem);
         font-weight: 600;
         letter-spacing: 0.02em;
     }
